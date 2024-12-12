@@ -52,8 +52,10 @@ services:
 
   # Consul
   consul:
-    image: consul:latest
-    command: agent -dev -client=0.0.0.0
+    image: consul:1.15
+    command: agent -server -bootstrap-expect=1 -client=0.0.0.0 -ui
+    volumes:
+      - ./data/consul:/consul/data
     ports:
       - "8500:8500"
       - "8300:8300"
@@ -73,7 +75,7 @@ services:
 
   # Collector
   otel-collector:
-    image: otel/opentelemetry-collector-contrib-dev:latest
+    image: otel/opentelemetry-collector-contrib:0.84.0
     command: [ "--config=/etc/otel-collector-config.yaml", "${OTELCOL_ARGS}" ]
     volumes:
       - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
